@@ -1,0 +1,10 @@
+# ENV
+
+```Copy
+TYPEORM_HOST=fine_tracker_db
+TYPEORM_PORT=5432
+TYPEORM_USERNAME=tracker
+TYPEORM_PASSWORD=tracker_2025
+TYPEORM_DATABASE=fine_tracker
+TYPEORM_SYNCHRONIZE=false
+```
