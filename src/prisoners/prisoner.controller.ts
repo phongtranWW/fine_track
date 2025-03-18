@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -13,7 +12,7 @@ import { PrisonerService } from './prisoner.service';
 import { PrisonerDto } from './dtos/prisoner.dto';
 import { CreatePrisonerDto } from './dtos/create-prisoner.dto';
 import { UpdatePrisonerDto } from './dtos/update-prisoner.dto';
-import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('prisoners')
 export class PrisonerController {
@@ -35,6 +34,8 @@ export class PrisonerController {
   @ApiBody({
     type: CreatePrisonerDto,
   })
+  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 400 })
   async create(@Body() createPrisonerDto: CreatePrisonerDto) {
     return await this.prisonerService.create(createPrisonerDto);
   }
@@ -43,27 +44,19 @@ export class PrisonerController {
   @ApiParam({
     name: 'prisonerId',
     type: 'number',
-    description: 'Prisoner id',
+    description: 'Prisoner ID',
     required: true,
   })
   @ApiBody({
     type: UpdatePrisonerDto,
   })
+  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 400 })
+  @ApiResponse({ status: 404 })
   async update(
     @Param('prisonerId', ParseIntPipe) prisonerId: number,
     @Body() updatePrisonerDto: UpdatePrisonerDto,
   ) {
     return await this.prisonerService.update(prisonerId, updatePrisonerDto);
-  }
-
-  @Delete(':prisonerId')
-  @ApiParam({
-    name: 'prisonerId',
-    type: 'number',
-    description: 'Prisoner id',
-    required: true,
-  })
-  async delete(@Param('prisonerId', ParseIntPipe) prisonerId: number) {
-    return await this.prisonerService.delete(prisonerId);
   }
 }

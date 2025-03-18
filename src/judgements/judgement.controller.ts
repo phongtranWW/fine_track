@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -12,7 +11,8 @@ import {
 import { JudgementService } from './judgement.service';
 import { CreateJudgementDto } from './dtos/create-judgement.dto';
 import { UpdateJudgementDto } from './dtos/update-judgement.dto';
-import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { JudgementDto } from './dtos/judgement.dto';
 
 @Controller('judgements')
 export class JudgementController {
@@ -21,6 +21,8 @@ export class JudgementController {
   @Get()
   @ApiQuery({ name: 'page', description: 'Page number', required: true })
   @ApiQuery({ name: 'limit', description: 'Limit number', required: true })
+  @ApiResponse({ status: 200, type: [JudgementDto] })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   async findMany(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
@@ -30,6 +32,8 @@ export class JudgementController {
 
   @Post()
   @ApiBody({ type: CreateJudgementDto })
+  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 400 })
   async create(@Body() createJudgementDto: CreateJudgementDto) {
     return await this.judgementService.create(createJudgementDto);
   }
@@ -41,20 +45,13 @@ export class JudgementController {
     required: true,
   })
   @ApiBody({ type: UpdateJudgementDto })
+  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 400 })
+  @ApiResponse({ status: 404 })
   async update(
     @Param('judgementId') judgementId: string,
     @Body() updateJudgementDto: UpdateJudgementDto,
   ) {
     return await this.judgementService.update(judgementId, updateJudgementDto);
-  }
-
-  @Delete(':judgementId')
-  @ApiParam({
-    name: 'judgementId',
-    description: 'Judgement ID',
-    required: true,
-  })
-  async delete(@Param('judgementId') judgementId: string) {
-    return await this.judgementService.delete(judgementId);
   }
 }

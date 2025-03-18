@@ -6,7 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { typeOrmConfig } from './config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JudgementModule } from './judgements/judgement.module';
+import { PenaltyTypeModule } from './penalty-types/penalty-type.module';
 import { LegalCaseModule } from './legal-cases/legal-case.module';
+import { RemainingFineModule } from './remaining-fines/remaining-fine.module';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { LegalCaseModule } from './legal-cases/legal-case.module';
     }),
     PrisonerModule,
     JudgementModule,
+    PenaltyTypeModule,
     LegalCaseModule,
+    RemainingFineModule,
   ],
   controllers: [AppController],
   providers: [AppService],

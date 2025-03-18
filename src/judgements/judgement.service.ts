@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Judgement } from './entities/judgement.entity';
 import { Repository } from 'typeorm';
@@ -22,6 +27,12 @@ export class JudgementService {
   }
 
   async update(judgementId: string, updateJudgementDto: UpdateJudgementDto) {
+    const judgement = await this.repository.findOneBy({ judgementId });
+
+    if (!judgement) {
+      throw new NotFoundException('Judgement not found');
+    }
+
     try {
       await this.repository.update(judgementId, { ...updateJudgementDto });
     } catch (error) {
@@ -30,22 +41,18 @@ export class JudgementService {
   }
 
   async findMany(page: number, limit: number): Promise<JudgementDto[]> {
-    const judgements = await this.repository.find({
-      take: limit,
-      skip: limit * (page - 1),
-    });
-
-    return judgements.map((judgement) => ({
-      judgementId: judgement.judgementId,
-      judgementDate: judgement.judgementDate,
-    }));
-  }
-
-  async delete(judgementId: string) {
     try {
-      await this.repository.delete(judgementId);
+      const judgements = await this.repository.find({
+        take: limit,
+        skip: limit * (page - 1),
+      });
+
+      return judgements.map((judgement) => ({
+        judgementId: judgement.judgementId,
+        judgementDate: judgement.judgementDate,
+      }));
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

@@ -6,29 +6,33 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Penalty } from './penalty.entity';
 import { Payment } from './payment.entity';
 
-@Entity('legal_case')
+@Entity({ name: 'legal_case' })
 export class LegalCase {
-  @PrimaryColumn({ type: 'text', name: 'judgement_id' })
+  @PrimaryGeneratedColumn('increment', { name: 'case_id' })
+  caseId: number;
+
+  @Column({ name: 'judgement_id', type: 'text' })
   judgementId: string;
 
-  @PrimaryColumn({ type: 'int', name: 'prisoner_id' })
+  @Column({ name: 'prisoner_id', type: 'int' })
   prisonerId: number;
-
-  @Column({ type: 'numeric', name: 'total_fine' })
-  totalFine: number;
-
-  @ManyToOne(() => Judgement, (judgement) => judgement.legalCases)
-  @JoinColumn({ name: 'judgement_id' })
-  judgement: Judgement;
 
   @ManyToOne(() => Prisoner, (prisoner) => prisoner.legalCases)
   @JoinColumn({ name: 'prisoner_id' })
   prisoner: Prisoner;
 
+  @ManyToOne(() => Judgement, (judgement) => judgement.legalCases)
+  @JoinColumn({ name: 'judgement_id' })
+  judgement: Judgement;
+
+  @OneToMany(() => Penalty, (penalty) => penalty.legalCase)
+  penalties: Penalty[];
+
   @OneToMany(() => Payment, (payment) => payment.legalCase)
-  payment: Payment[];
+  payments: Payment[];
 }

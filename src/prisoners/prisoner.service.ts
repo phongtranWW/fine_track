@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Prisoner } from './entities/prisoner.entity';
 import { ILike, Repository } from 'typeorm';
@@ -22,18 +27,18 @@ export class PrisonerService {
   }
 
   async update(prisonerId: number, updatePrisonerDto: UpdatePrisonerDto) {
+    const prisoner = await this.prisonerRepository.findOneBy({
+      prisonerId,
+    });
+
+    if (!prisoner) {
+      throw new NotFoundException('Prisoner not found');
+    }
+
     try {
       await this.prisonerRepository.update(prisonerId, {
         ...updatePrisonerDto,
       });
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  async delete(prisonerId: number) {
-    try {
-      await this.prisonerRepository.delete(prisonerId);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -44,18 +49,22 @@ export class PrisonerService {
     limit: number,
     name?: string,
   ): Promise<PrisonerDto[]> {
-    const condition = name ? { prisonerName: ILike(`%${name}%`) } : {};
-    const prisoners = await this.prisonerRepository.find({
-      where: condition,
-      take: limit,
-      skip: limit * (page - 1),
-    });
+    try {
+      const condition = name ? { prisonerName: ILike(`%${name}%`) } : {};
+      const prisoners = await this.prisonerRepository.find({
+        where: condition,
+        take: limit,
+        skip: limit * (page - 1),
+      });
 
-    return prisoners.map((prisoner) => ({
-      prisonerId: prisoner.prisonerId,
-      prisonerName: prisoner.prisonerName,
-      dob: prisoner.dob,
-      pob: prisoner.pob,
-    }));
+      return prisoners.map((prisoner) => ({
+        prisonerId: prisoner.prisonerId,
+        prisonerName: prisoner.prisonerName,
+        dob: prisoner.dob,
+        pob: prisoner.pob,
+      }));
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

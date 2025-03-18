@@ -8,10 +8,10 @@ import {
 import { LegalCase } from './legal-case.entity';
 import { PenaltyType } from 'src/penalty-types/entities/penalty-type.entity';
 
-@Entity('payment')
-export class Payment {
-  @PrimaryGeneratedColumn('increment', { name: 'payment_id' })
-  paymentId: number;
+@Entity('penalty')
+export class Penalty {
+  @PrimaryGeneratedColumn('increment', { name: 'penalty_id' })
+  penaltyId: number;
 
   @Column({ name: 'case_id', type: 'int' })
   caseId: number;
@@ -19,16 +19,10 @@ export class Payment {
   @Column({ name: 'penalty_type_id', type: 'int' })
   penaltyTypeId: number;
 
-  @Column({ name: 'payment_amount', type: 'numeric', nullable: true })
-  paymentAmount: number;
+  @Column({ name: 'penalty_amount', type: 'numeric', default: 0 })
+  penaltyAmount: number;
 
-  @Column({ name: 'payment_location', type: 'text', nullable: true })
-  paymentLocation: string;
-
-  @Column({ name: 'payment_date', type: 'date', nullable: true })
-  paymentDate: Date;
-
-  @ManyToOne(() => LegalCase, (legalCase) => legalCase.payments)
+  @ManyToOne(() => LegalCase, (legalCase) => legalCase.penalties)
   @JoinColumn({ name: 'case_id' })
   legalCase: LegalCase;
 

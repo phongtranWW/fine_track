@@ -9,10 +9,10 @@ export class Prisoner {
   @Column({ name: 'prisoner_name', type: 'text' })
   prisonerName: string;
 
-  @Column({ name: 'dob', nullable: true, type: 'date' })
+  @Column({ name: 'dob', type: 'date', nullable: true })
   dob: Date;
 
-  @Column({ name: 'pob', nullable: true, type: 'text' })
+  @Column({ name: 'pob', type: 'text', nullable: true })
   pob: string;
 
   @OneToMany(() => LegalCase, (legalCase) => legalCase.prisoner)

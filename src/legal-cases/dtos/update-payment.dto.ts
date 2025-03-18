@@ -1,11 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class AddPaymentDto {
-  @ApiProperty({ required: true, description: 'Penalty Type ID', example: 1 })
-  penaltyTypeId: number;
+export class UpdatePaymentDto {
+  @ApiProperty({ required: false, description: 'Penalty Type ID', example: 1 })
+  penaltyTypeId?: number;
 
-  @ApiProperty({ required: true, description: 'Payment Amount', example: 5000 })
-  paymentAmount: number;
+  @ApiProperty({
+    required: false,
+    description: 'Payment Amount',
+    example: 5000,
+  })
+  paymentAmount?: number;
 
   @ApiProperty({
     required: false,
