@@ -180,7 +180,7 @@ INSERT INTO payment (case_id, penalty_type_id, payment_amount, payment_location,
 (20, 1, 700000, 'Trại giam số 16', '2024-09-05');
 
 
-CREATE MATERIALIZED VIEW mv_remaining_fine AS
+CREATE VIEW mv_remaining_fine AS
 SELECT
     lc.judgement_id,
     pr.prisoner_id,
@@ -202,8 +202,6 @@ FROM legal_case lc
          LEFT JOIN payment pm ON p.case_id = pm.case_id AND p.penalty_type_id = pm.penalty_type_id
 GROUP BY lc.judgement_id, pr.prisoner_id, pr.prisoner_name, pr.dob, pr.pob, pt.penalty_name, p.penalty_amount;
 
--- Cập nhật lại Materialized View khi cần
-REFRESH MATERIALIZED VIEW mv_remaining_fine;
 SELECT * FROM mv_remaining_fine;
 
 
