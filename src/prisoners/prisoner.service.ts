@@ -48,15 +48,26 @@ export class PrisonerService {
     page: number,
     limit: number,
     name?: string,
+    dob?: Date,
+    pob?: string,
   ): Promise<PrisonerDto[]> {
     try {
-      const condition = name ? { prisonerName: ILike(`%${name}%`) } : {};
-      const prisoners = await this.prisonerRepository.find({
-        where: condition,
-        take: limit,
-        skip: limit * (page - 1),
-      });
+      const conditions = {};
+      if (name) {
+        conditions['prisonerName'] = ILike(`%${name}%`);
+      }
+      if (dob) {
+        conditions['dob'] = dob;
+      }
+      if (pob) {
+        conditions['pob'] = ILike(`%${pob}%`);
+      }
 
+      const prisoners = await this.prisonerRepository.find({
+        where: conditions,
+        take: limit,
+        skip: (page - 1) * limit,
+      });
       return prisoners.map((prisoner) => ({
         prisonerId: prisoner.prisonerId,
         prisonerName: prisoner.prisonerName,

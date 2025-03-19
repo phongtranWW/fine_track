@@ -22,12 +22,26 @@ export class PrisonerController {
   @ApiQuery({ name: 'page', description: 'Page number', required: true })
   @ApiQuery({ name: 'limit', description: 'Limit number', required: true })
   @ApiQuery({ name: 'name', description: 'Prisoner name', required: false })
+  @ApiQuery({
+    name: 'dob',
+    description: 'Date of Birth',
+    required: false,
+    format: 'date',
+  })
+  @ApiQuery({
+    name: 'pob',
+    description: 'Prisoner name',
+    required: false,
+    type: 'string',
+  })
   async findMany(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('name') name?: string,
+    @Query('dob') dob?: Date,
+    @Query('pob') pob?: string,
   ): Promise<PrisonerDto[]> {
-    return await this.prisonerService.findMany(page, limit, name);
+    return await this.prisonerService.findMany(page, limit, name, dob, pob);
   }
 
   @Post()
