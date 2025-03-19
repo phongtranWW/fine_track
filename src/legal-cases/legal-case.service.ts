@@ -51,12 +51,15 @@ export class LegalCaseService {
   async getLegalCases(prisonerId: number): Promise<LegalCaseDto[]> {
     const prisonerLegalCase = await this.entityManager
       .createQueryBuilder(LegalCase, 'lc')
+      .leftJoin('lc.judgement', 'jd')
       .leftJoin('lc.penalties', 'pe')
       .leftJoin('pe.penaltyType', 'pe_pet')
       .leftJoin('lc.payments', 'pm')
       .leftJoin('pm.penaltyType', 'pm_pet')
       .select([
         'lc.caseId',
+        'lc.judgementId',
+        'jd.judgementDate',
         'pe.penaltyId',
         'pe.penaltyTypeId',
         'pe_pet.penaltyName',
@@ -74,6 +77,8 @@ export class LegalCaseService {
     return prisonerLegalCase.map((legalCase) => {
       return {
         caseId: legalCase.caseId,
+        judgementId: legalCase.judgementId,
+        judgementDate: legalCase.judgement.judgementDate,
         penalties: legalCase.penalties.map((penalty) => ({
           penaltyId: penalty.penaltyId,
           penaltyName: penalty.penaltyType.penaltyName,

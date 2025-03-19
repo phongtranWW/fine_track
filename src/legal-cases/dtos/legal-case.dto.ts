@@ -49,6 +49,17 @@ export class LegalCaseDto {
   @ApiProperty({ example: 1, description: 'Case ID' })
   caseId: number;
 
+  @ApiProperty({ example: 'J2024001', description: 'Judgement ID' })
+  judgementId: string;
+
+  @ApiProperty({
+    example: '2024-03-18',
+    description: 'Judgement date',
+    type: 'string',
+    format: 'date',
+  })
+  judgementDate: Date;
+
   @ApiProperty({ type: [PenaltyDto], description: 'List of penalties' })
   penalties: PenaltyDto[];
 
